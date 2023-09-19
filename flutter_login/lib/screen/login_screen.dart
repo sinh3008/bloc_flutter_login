@@ -16,52 +16,52 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      body: BlocListener<LoginBloc, LoginState>(
+      body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
             Navigator.pushNamed(context, '/screen2');
           }
         },
-        child: BlocBuilder<LoginBloc, LoginState>(
-          builder: (context, state) {
-            if (state is LoginLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state is LoginFailure) {
-              return Center(
-                child: Text(state.error),
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    controller: usernameController,
-                    decoration: const InputDecoration(labelText: 'Username'),
-                  ),
-                  TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      final username = usernameController.text;
-                      final password = passwordController.text;
-                      loginBloc.add(LoginButtonPressed(
-                          username: username, password: password));
-                    },
-                    child: const Text('Login'),
-                  ),
-                ],
-              ),
+        builder: (context, state) {
+          if (state is LoginLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
+          } else if (state is LoginFailure) {
+            return Center(
+              child: Text(state.error),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                ),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    final username = usernameController.text;
+                    final password = passwordController.text;
+                    loginBloc.add(LoginButtonPressed(
+                        username: username, password: password));
+                    usernameController.dispose();
+                    passwordController.dispose();
+                  },
+                  child: const Text('Login'),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
